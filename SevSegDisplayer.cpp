@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include "HardwareSerial.h"
 #include "SevSegDisplayer.h"
 
@@ -10,17 +11,20 @@ SevSegDisplayer::SevSegDisplayer() : Scheduleable() {
 
 SevSegDisplayer::SevSegDisplayer(SevSeg* ss) : Scheduleable() {
   this->counter = 0;
-  this->goal = 100;
+  this->goal = 1000;
   this->number = 0;
   this->sevseg = ss;
 }
 
 void SevSegDisplayer::call() {
+  static unsigned long prevTime = millis();
+
+  sevseg->refreshDisplay();
   if (is_paused()) return;
 
-  counter = counter + 1;
-  if (counter >= 10000) {
-    counter = 0;
+  unsigned long currentTime = millis();
+  if (currentTime - prevTime >= 1000) {
+    prevTime = currentTime;
     number = number + 1;
     if (number >= goal) {
       sevseg->blank();
@@ -32,5 +36,4 @@ void SevSegDisplayer::call() {
 
 void SevSegDisplayer::call_bg() {
   _ready();
-  sevseg->refreshDisplay();
 }

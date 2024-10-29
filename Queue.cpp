@@ -10,7 +10,7 @@ void Queue<T>::enqueue(T val) {
 
 template<typename T>
 void Queue<T>::dequeue() {
-  this->idx_f = (this->idx_f + 1 % size);
+  this->idx_f = (this->idx_f + 1) % size;
   this->full = false;
 }
 
@@ -48,6 +48,7 @@ Queue<T>::Queue() {
   this->idx_e = 0;
   this->size = 0;
   this->arr = new T[this->size];
+  this->full = false;
 }
 
 template<typename T>
@@ -56,6 +57,7 @@ Queue<T>::Queue(unsigned int n) {
   this->idx_e = 0;
   this->size = n;
   this->arr = new T[this->size];
+  this->full = false;
 }
 
 template class Queue<Scheduleable*>;

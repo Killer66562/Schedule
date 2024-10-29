@@ -21,9 +21,7 @@ void Scheduler::call() {
   if (!p_stack->is_empty()) {
     Scheduleable* top = p_stack->top();
     top->call();
-    if (top->is_exited()) {
-      p_stack->pop();
-    }
+    if (top->is_exited()) p_stack->pop();
     else if (top->is_paused()) {
       Scheduleable* next_p = top->get_next_p();
       if (next_p != nullptr) {
@@ -35,13 +33,12 @@ void Scheduler::call() {
     else {}
   }
 
-  for (unsigned int i = 0; i < p_queue->count(); ++i) {
+  if (!p_queue->is_empty()) {
     Scheduleable* current = p_queue->front();
     current->call_bg();
     p_queue->dequeue();
-    if (current->is_ready() && !p_stack->exists(current)) {
+    if (current->is_ready() && !p_stack->exists(current))
       p_stack->push(current);
-    }
     p_queue->enqueue(current);
   }
 
